@@ -196,7 +196,7 @@ void bot::sqlUpdate(mumbleUser* user, std::uint32_t addedTime, bool talking, std
     try {
             SQLite::Transaction transaction(db);
 
-            if (talking && (currentChannel == user->channel)) {
+            if (talking) {
                 user->talkingTime += addedTime - idleTime;
                 
                 db.exec(std::format("UPDATE users SET ONLINESECS = {}, TALKINGSECS = {} WHERE ID = {}", user->connectedTime, user->talkingTime, user->key));
