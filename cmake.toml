@@ -1,0 +1,38 @@
+# Reference: https://build-cpp.github.io/cmkr/cmake-toml
+[project]
+name = "mumblebot"
+cmake-after = """
+set(VCPKG_TARGET_TRIPLET x64-linux)
+set(MUMLIB2_BUILD_SHARED_LIBS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+"""
+[vcpkg]
+version = "2024.02.14"
+packages = [
+	"openssl[ssl3]",
+	"asio[openssl]",
+	"protobuf[zlib]",
+	"opus",
+	"sqlitecpp"
+]
+
+[fetch-content.mumlib2]
+git = "https://github.com/lilac1337/mumlib2.git"
+tag = "b7b0adec3e3025c8e4633624d97528bdb737a179"
+
+[find-package]
+OpenSSL = {required=true}
+asio = {required=true}
+protobuf = {required=true}
+Opus = {required=true}
+fmt = {required=true}
+spdlog = {required=true}
+SQLiteCpp = {required=true}
+	
+[target.mumblebot]
+type = "executable"
+headers = ["src/**.hxx"]
+sources = ["src/**.cxx"]
+include-directories = ["src"]
+compile-features = ["cxx_std_23"]
+link-libraries = ["OpenSSL::SSL", "OpenSSL::Crypto", "asio", "opus", "mumlib2", "spdlog", "fmt", "sqlite3", "SQLiteCpp"]
