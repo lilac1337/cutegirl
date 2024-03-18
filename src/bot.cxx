@@ -24,30 +24,56 @@ void bot::sendLeaderboard(std::uint32_t actor, bool pm) {
     std::ranges::sort(rankings, std::greater<>{}, [](auto&& t) { return std::get<1>(t); });
     std::string message = "<br>~~ Connection Leaderboard ~~<br>";
 
+    std::chrono::seconds total{};
+
     for (size_t i{}; i < rankings.size(); ++i) {
         auto& [name, onlineSecs, talkingSecs] = rankings[i];
 
         if (!onlineSecs)
             continue;
-        
+
         std::chrono::seconds seconds(onlineSecs);
+        total += seconds;
         
-        message.append(std::format("#{} ~  {}: {:%Hh%Mm%Ss}<br>", i + 1, name, seconds));
+        auto hours = std::chrono::duration_cast<std::chrono::hours>(seconds);
+        auto mins = std::chrono::duration_cast<std::chrono::minutes>(seconds - hours);
+        auto secs = std::chrono::duration_cast<std::chrono::seconds>(seconds - hours - mins);
+        
+        message.append(std::format("#{} ~  {}: {}h{}m{}s<br>", i + 1, name, hours.count(), mins.count(), secs.count()));
     }
 
+    auto hours = std::chrono::duration_cast<std::chrono::hours>(total);
+    auto mins = std::chrono::duration_cast<std::chrono::minutes>(total - hours);
+    auto secs = std::chrono::duration_cast<std::chrono::seconds>(total - hours - mins);
+        
+    message.append(std::format("# ~ ~  {}h{}m{}s total<br>", hours.count(), mins.count(), secs.count()));
+    
     std::ranges::sort(rankings, std::greater<>{}, [](auto&& t) { return std::get<2>(t); });
     message.append("<br>~~ Speaking Leaderboard ~~<br>");
 
+    total = 0s;
+    
     for (size_t i{}; i < rankings.size(); ++i) {
         auto& [name, onlineSecs, talkingSecs] = rankings[i];
 
         if (!talkingSecs)
             continue;
         
-        std::chrono::seconds talking(talkingSecs);
+        std::chrono::seconds seconds(talkingSecs);
+        total += seconds;
+
+        auto hours = std::chrono::duration_cast<std::chrono::hours>(seconds);
+        auto mins = std::chrono::duration_cast<std::chrono::minutes>(seconds - hours);
+        auto secs = std::chrono::duration_cast<std::chrono::seconds>(seconds - hours - mins);
         
-        message.append(std::format("#{} ~  {}: {:%Hh%Mm%Ss}<br>", i + 1, name, talking));
+        message.append(std::format("#{} ~  {}: {}h{}m{}s<br>", i + 1, name, hours.count(), mins.count(), secs.count()));
     }
+
+    hours = std::chrono::duration_cast<std::chrono::hours>(total);
+    mins = std::chrono::duration_cast<std::chrono::minutes>(total - hours);
+    secs = std::chrono::duration_cast<std::chrono::seconds>(total - hours - mins);
+
+    message.append(std::format("# ~ ~  {}h{}m{}s total<br>", hours.count(), mins.count(), secs.count()));
     
     mum->sendTextMessage(message);
 }
