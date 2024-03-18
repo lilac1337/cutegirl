@@ -34,7 +34,5 @@ void callback::userState(int32_t session,int32_t actor, std::string name, int32_
 void callback::userStats(uint32_t sessionId, uint32_t onlinesecs, uint32_t idlesecs) {
     mumlib2::Callback::userStats(sessionId, onlinesecs, idlesecs);
 
-    bot::handleStats(sessionId, onlinesecs, idlesecs);
-  
-    //spdlog::info("userStats: sessionId ({}), onlinesecs ({})", sessionId,onlinesecs);
+    bot::handleStats(sessionId, onlinesecs, idlesecs); 
 }

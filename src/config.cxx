@@ -27,7 +27,4 @@ void config::loadConfig() {
 
         config::settings[std::string(setting)] = std::string(value);
     }
-
-    for (auto&& setting : settings)
-        std::cout << setting.first << ' ' << setting.second << std::endl;
 }
