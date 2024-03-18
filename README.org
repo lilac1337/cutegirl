@@ -3,8 +3,7 @@ note: currently only linux is supported, maybe windows support if i stop being l
 
 * features
 ** time tracking
-cutegirl tracks both time spent connected to the server and time spent speaking
-note: you will have to give the @all ACL ~Register User~ permission in order for speaking tracking to work properly
+cutegirl tracks both time spent connected to the server and time spent speaking (note: you will have to give the @all ACL ~Register User~ permission in order for speaking tracking to work properly)
 
 * commands
 - ~;lb~ or ~;leaderboard~ prints the leaderboard to the chat
