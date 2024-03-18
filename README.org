@@ -1,11 +1,7 @@
 * cutegirl
-
------
-
 note: currently only linux is supported, maybe windows support if i stop being lazy
 
 * features
-
 ** time tracking
 cutegirl tracks both time spent connected to the server and time spent speaking (note: the bot has to be in the same channel as the speaker in order to log it)
 
@@ -14,6 +10,10 @@ cutegirl tracks both time spent connected to the server and time spent speaking 
 - ~;bring~ brings the bot to your current channel (done via pming)
 
 * building
+** requirements
+~spdlog~ and ~fmt~ must be installed from your distro's package manager, every other lilbrary is gotten automatically from vcpkg when building
+
+** compiling
 simply run
 #+BEGIN_SRC shell
 cmake -B build
