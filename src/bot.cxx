@@ -128,7 +128,7 @@ void bot::handleStats(std::uint32_t sessionId, std::uint32_t onlineSecs, std::ui
     auto found = std::ranges::find(users, bot::myCallback.mum.load()->UserGet(sessionId)->name, &mumbleUser::name);
 
     if (found != users.end()) {
-        sqlUpdate(found.base(), 5u, (idleSecs <= 5u), idleSecs);
+        sqlUpdate(found.base(), 5u, (idleSecs <= 5u && idleSecs != 0u), idleSecs);
 
         found->sessionId = sessionId;
         
