@@ -36,8 +36,8 @@ if(CMKR_ROOT_PROJECT AND NOT CMKR_DISABLE_VCPKG)
 	if(POLICY CMP0135)
 		cmake_policy(SET CMP0135 NEW)
 	endif()
-	message(STATUS "Fetching vcpkg (2024.02.14)...")
-	FetchContent_Declare(vcpkg URL "https://github.com/microsoft/vcpkg/archive/refs/tags/2024.02.14.tar.gz")
+	message(STATUS "Fetching vcpkg (2025.12.12)...")
+	FetchContent_Declare(vcpkg URL "https://github.com/microsoft/vcpkg/archive/refs/tags/2025.12.12.tar.gz")
 	FetchContent_GetProperties(vcpkg)
 	if(NOT vcpkg_POPULATED)
 		FetchContent_Populate(vcpkg)
@@ -47,12 +47,12 @@ endif()
 
 include(FetchContent)
 
-message(STATUS "Fetching mumlib2 (b7b0adec3e3025c8e4633624d97528bdb737a179)...")
+message(STATUS "Fetching mumlib2 (10803b948c32aaeb32b84e2526bd5d93e12c6424)...")
 FetchContent_Declare(mumlib2
 	GIT_REPOSITORY
 		"https://github.com/lilac1337/mumlib2.git"
 	GIT_TAG
-		b7b0adec3e3025c8e4633624d97528bdb737a179
+		10803b948c32aaeb32b84e2526bd5d93e12c6424
 )
 FetchContent_MakeAvailable(mumlib2)
 

@@ -1,6 +1,7 @@
 #include "bot.hxx"
 #include "config.hxx"
 #include <chrono>
+#include <cstdint>
 #include <exception>
 #include <ranges>
 
@@ -101,7 +102,7 @@ void bot::handleDisconnect(std::uint32_t sessionId) {
     if (found == users.end())
         return;
 
-    spdlog::info("{} has disconnected with {} total seconds", found->name, found->connectedTime);
+    spdlog::info("[bot::handleDisconnect] {} has disconnected with {} total seconds.", found->name, found->connectedTime);
 
      found->sessionId = 0u;
 }
@@ -115,7 +116,7 @@ void bot::handleConnect(std::uint32_t sessionId, std::int32_t channelId) {
     if (found == users.end())
         return;
 
-    spdlog::info("{} has connected/changed with a total of {} onlinsecs", found->name, found->connectedTime);
+    spdlog::info("[bot::handleConnect] {} has connected/changed with a total of {} onlinsecs", found->name, found->connectedTime);
 
     found->sessionId = sessionId;
     found->channel = channelId;
@@ -150,34 +151,45 @@ void bot::handleStats(std::uint32_t sessionId, std::uint32_t onlineSecs, std::ui
 		transaction.commit();
 	}
 	catch (std::exception& e) {
-	    spdlog::info("bot::handleStats sql exception: {}", e.what());
+	    spdlog::info("[bot::handleStats] sql exception: {}.", e.what());
 	}
 
     users.push_back(newUser);
     
-    spdlog::info("inserted user \"{}\" onlineSecs = {}", newUser.name, onlineSecs);
+    spdlog::info("[bot::handleStats] inserted user \"{}\" onlineSecs = {} into memory and db.", newUser.name, onlineSecs);
 }
 
 void bot::requestStats() {
+    std::uint_fast16_t load = 1u;
+    static bool loaded = false;
+    
     while ("swag") {
         auto mum = myCallback.mum.load();
 
         if (!mum) {
-            spdlog::info("mumlib not yet loaded");
-        } else {
-            std::vector<mumlib2::MumbleUser> users = mum->getListAllUser();
-
-            for (auto &&user : users) {
-                if (user.name == config::settings["username"]) {
-                     self = user.sessionId;
-                     continue;
-                }
-                
-                mum->requestUserStats(user.sessionId, true);
-            }
-            
-            std::this_thread::sleep_for(5s);
+            spdlog::info("\r[bot::requestStats] mumlib not yet loaded, ({} tr(y/ies)).", load);
+            ++load;
+            std::this_thread::sleep_for(10ms);
+            continue;
         }
+
+        if (load > 0u && !loaded) {
+            spdlog::info("[bot::requestStats] mumblib loaded after {} tries.", load);
+        }
+        
+        std::vector<mumlib2::MumbleUser> users = mum->getListAllUser();
+
+        for (auto &&user : users) {
+            if (user.name == config::settings["username"]) {
+                self = user.sessionId;
+                continue;
+            }
+                
+            mum->requestUserStats(user.sessionId, true);
+        }
+
+        loaded = true;
+        std::this_thread::sleep_for(5s);
     }
 }
 
@@ -206,13 +218,13 @@ void bot::sqlInit() {
             const std::uint32_t onlineSecs = query.getColumn(2);
             const std::uint32_t talkingSecs = query.getColumn(3);
 
-            spdlog::info("pushed {} with {} onlineSecs", name, onlineSecs);
+            spdlog::info("[bot::sqlInit] pushed {} with {} onlineSecs into memory.", name, onlineSecs);
             
-			users.push_back({key, name, 0u, onlineSecs, talkingSecs});
+			users.emplace_back(key, name, 0u, onlineSecs, talkingSecs);
 		}
 	}
 	catch (std::exception& e) {
-        spdlog::info("sqlInit exception: {}", e.what());
+        spdlog::info("[bot::sqlInit] exception: {}.", e.what());
 	}
 }
 
@@ -232,6 +244,6 @@ void bot::sqlUpdate(mumbleUser* user, std::uint32_t addedTime, bool talking, std
             
             transaction.commit();
     } catch (std::exception& e) {
-        spdlog::info("bot::sqlUpdate exception: {}", e.what());
+        spdlog::info("[bot::sqlUpdate] exception: {}.", e.what());
     }
 }

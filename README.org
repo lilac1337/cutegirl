@@ -16,7 +16,13 @@ cutegirl tracks both time spent connected to the server and time spent speaking 
 ** compiling
 simply run
 #+BEGIN_SRC shell
+git clone https://github.com/lilac1337/cutegirl.git
+cd cutegirl
 cmake -B build
 cmake --build build
+mv cutegirl.conf build/
+chmod +x build/cutegirl
 #+END_SRC
-then move ~cutegirl.conf~ to the build folder and start the bot by running ~build/mumblebot~
+make sure to move ~cutegirl.conf~ to the build folder and start the bot by running ~./mumblebot~ from the build directory
+
+note: you must change the information in cutegirl.conf to match your server's prior to running

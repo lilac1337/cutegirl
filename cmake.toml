@@ -7,7 +7,7 @@ set(MUMLIB2_BUILD_SHARED_LIBS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 """
 [vcpkg]
-version = "2024.02.14"
+version = "2025.12.12"
 packages = [
 	"openssl[ssl3]",
 	"asio[openssl]",
@@ -18,7 +18,7 @@ packages = [
 
 [fetch-content.mumlib2]
 git = "https://github.com/lilac1337/mumlib2.git"
-tag = "b7b0adec3e3025c8e4633624d97528bdb737a179"
+tag = "10803b948c32aaeb32b84e2526bd5d93e12c6424"
 
 [find-package]
 OpenSSL = {required=true}

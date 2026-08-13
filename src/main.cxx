@@ -24,6 +24,8 @@ void runApp() {
 }
 
 int main(int argc, char *argv[]) {
+    spdlog::info("[main] mumbleBot started.");
+    
     config::loadConfig();
     bot::init();
     
